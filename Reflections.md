@@ -13,9 +13,10 @@ This particular implementation uses 4 state variables, X coordinates, Y Coordina
 
 ### Coordinate System Transformation: 
 The simulator we used with the model refers to a Map coordinate system, whereas the MPC uses coordinatets from the vehicle's coordinate system. Hence, when feedback is given from the simulator, the coordinate points have to be transformed to the Vehicle's POV/Coordinate System for MPC using these equations:
-				**********************************************					
-Xm = Xp + cos(psi) * Xc - sin(theta) * Yc 
-Ym = Yp + sin(psi) * Xc + cos(theta) * Yc 
+				
+**********************************************					
+		Xm = Xp + cos(psi) * Xc - sin(theta) * Yc 
+		Ym = Yp + sin(psi) * Xc + cos(theta) * Yc 
 **********************************************	
 And using the simulator's documentation, the rotation was -90 hence the angle (psi) from the simulator was negated.
 
@@ -61,21 +62,21 @@ Equations are used in this system to determine predictions on the Prediction Hor
 Here is an example of equations used to create constraints on the system that creates a solution optimizing the lowest error predictions.
 
 
-AD<double> f0 = coeffs[3]*CppAD::pow(x0,3) + coeffs[2]*CppAD::pow(x0,2) + coeffs[1]*x0 + coeffs[0];
-AD<double> psides0  = CppAD:: atan(3*coeffs[3] * CppAD::pow(x0,2) + 2*coeffs[2]*x0 + coeffs[1]);
+		AD<double> f0 = coeffs[3]*CppAD::pow(x0,3) + coeffs[2]*CppAD::pow(x0,2) + coeffs[1]*x0 + coeffs[0];
+		AD<double> psides0  = CppAD:: atan(3*coeffs[3] * CppAD::pow(x0,2) + 2*coeffs[2]*x0 + coeffs[1]);
 		// calculating cost difference from future state t+1 minus predicted from t.	
 		// x
-fg[1 + x_start + t] = x1 - (x0 + v0 * CppAD::cos(psi0) * dt); 
+		fg[1 + x_start + t] = x1 - (x0 + v0 * CppAD::cos(psi0) * dt); 
 		// y		
-fg[1 + y_start + t] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt); 
+		fg[1 + y_start + t] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt); 
 		// psi		
-fg[1 + psi_start + t] = psi1 - (psi0 + (v0/Lf) * delta * dt);
+		fg[1 + psi_start + t] = psi1 - (psi0 + (v0/Lf) * delta * dt);
 		// v
-fg[1 + v_start + t] = v1 - (v0 + a*dt);	
+		fg[1 + v_start + t] = v1 - (v0 + a*dt);	
 		// cte
-fg[1 + cte_start + t] = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));	
+		fg[1 + cte_start + t] = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));	
 		// epsi		
-fg[1 + epsi_start + t] = epsi1 - ((psi0 - psides0) + v0 * delta/Lf*dt);
+		fg[1 + epsi_start + t] = epsi1 - ((psi0 - psides0) + v0 * delta/Lf*dt);
   
 
 
